@@ -21,18 +21,15 @@ from typing import List
 
 class Solution:
     def permute(self, nums: List[int]) -> List[List[int]]:
-        endResult = []
-
         def helper(head, tail):
             if not tail:
-                endResult.append(head)
-                return head
+                return [head]
+            results = []
             for i in range(len(tail)):
-                n = tail[i]
-                helper(head + [n], tail[:i] + tail[i + 1 :])
+                results.extend(helper(head + [tail[i]], tail[:i] + tail[i + 1 :]))
+            return results
 
-        helper([], nums)
-        return endResult
+        return helper([], nums)
 
 
 def test():
