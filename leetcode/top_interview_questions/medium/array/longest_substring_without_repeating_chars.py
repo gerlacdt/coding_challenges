@@ -25,27 +25,15 @@ Explanation: The answer is "wke", with the length of 3.
 
 class Solution:
     def lengthOfLongestSubstring(self, s: str) -> int:
-        currentLen = 0
         maxLen = 0
         charIndices = {}
+        startIndex = 0
         for i, c in enumerate(s):
-            if c not in charIndices.keys():
-                currentLen += 1
-                charIndices[c] = i
-                if maxLen < currentLen:
-                    maxLen = currentLen
-            else:
-                oldIndex = charIndices[c]
-                currentLen = i - oldIndex
-                # adjust charIndices
-                charIndices[c] = i
-                toRemoveChars = []
-                for key, val in charIndices.items():
-                    if val < oldIndex:
-                        toRemoveChars.append(key)
-                for val in toRemoveChars:
-                    charIndices.pop(val)
-
+            if c in charIndices.keys():
+                # jump to the start index for the next unique word
+                startIndex = max(charIndices[c] + 1, startIndex)
+            maxLen = max(maxLen, i - startIndex + 1)
+            charIndices[c] = i
         return maxLen
 
 
