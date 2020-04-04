@@ -25,19 +25,15 @@ from typing import List
 
 class Solution:
     def coinChange(self, coins: List[int], amount: int) -> int:
-        def helper(selected, restAmount):
-            if restAmount < 0:
-                return -1
-            if restAmount == 0:
-                return len(selected)
-            results = []
-            for c in coins:
-                result = helper(selected + [c], restAmount - c)
-                if result != -1:
-                    results.append(result)
-            return min(results) if results else -1
-
-        return helper([], amount)
+        table = [-1] * (amount + 1)
+        table[0] = 0
+        for i in range(amount + 1):
+            validCoins = [
+                table[i - c] for c in coins if (i - c >= 0 and table[i - c] >= 0)
+            ]
+            if validCoins:
+                table[i] = min(validCoins) + 1
+        return table[-1]
 
 
 def test1():
@@ -76,10 +72,10 @@ def test4():
     assert actual == expected
 
 
-# def test5():
-#     sol = Solution()
-#     coins = [1, 2, 5]
-#     amount = 100
-#     actual = sol.coinChange(coins, amount)
-#     expected = 20
-#     assert actual == expected
+def test5():
+    sol = Solution()
+    coins = [1, 2, 5]
+    amount = 100
+    actual = sol.coinChange(coins, amount)
+    expected = 20
+    assert actual == expected
