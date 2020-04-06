@@ -67,37 +67,41 @@ class Solution:
         table = [[0 for _ in range(n)] for _ in range(m)]
         table[m - 1][n - 1] = 1
         frontier = deque([start])
+        visited = set()
 
         while frontier:
             i, j = frontier.popleft()
+            if (i, j) in visited:
+                continue
+            visited.add((i, j))
             if j - 1 >= 0:
                 table[i][j - 1] = (
                     table[i][j]
                     if table[i][j - 1] == 0
                     else table[i][j - 1] + table[i][j]
                 )
-                frontier.append((i, j - 1))
+                if (i, j - 1) not in visited:
+                    frontier.append((i, j - 1))
             if i - 1 >= 0:
                 table[i - 1][j] = (
                     table[i][j]
                     if table[i - 1][j] == 0
-                    else table[i][j] + table[i - 1][j + 1]
+                    else table[i][j] + table[i - 1][j]
                 )
-                frontier.append((i - 1, j))
-            print("position: ({}, {})table: {}".format(i, j, table))
-
+                if (i - 1, j) not in visited:
+                    frontier.append((i - 1, j))
         return table[0][0]
 
 
 def test():
     sol = Solution()
-    # m = 7
-    # n = 3
-    # actual = sol.uniquePaths(m, n)
-    # actual2 = sol.uniquePaths2(m, n)
-    # expected = 28
-    # assert actual == expected
-    # assert actual2 == expected
+    m = 7
+    n = 3
+    actual = sol.uniquePaths(m, n)
+    actual2 = sol.uniquePaths2(m, n)
+    expected = 28
+    assert actual == expected
+    assert actual2 == expected
 
     m = 3
     n = 2
@@ -107,16 +111,24 @@ def test():
     assert actual == expected
     assert actual2 == expected
 
-    # m = 3
-    # n = 4
-    # actual = sol.uniquePaths(m, n)
-    # actual2 = sol.uniquePaths2(m, n)
-    # expected = 10
-    # assert actual == expected
-    # assert actual2 == expected
+    m = 3
+    n = 4
+    actual = sol.uniquePaths(m, n)
+    actual2 = sol.uniquePaths2(m, n)
+    expected = 10
+    assert actual == expected
+    assert actual2 == expected
 
-    # m = 23
-    # n = 12
-    # actual = sol.uniquePaths2(m, n)
-    # expected = 3
-    # assert actual == expected
+    m = 7
+    n = 7
+    actual = sol.uniquePaths(m, n)
+    actual2 = sol.uniquePaths2(m, n)
+    expected = 924
+    assert actual == expected
+    assert actual2 == expected
+
+    m = 23
+    n = 12
+    actual = sol.uniquePaths2(m, n)
+    expected = 193536720
+    assert actual == expected
