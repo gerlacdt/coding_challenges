@@ -34,23 +34,17 @@ class Solution:
         :type target: int
         :rtype: bool
         """
-
-        def binary_search(nums, low, high):
-            if low > high:
-                return None
-            mid = (low + high) // 2
-            if nums[mid] == target:
-                return mid
-            if nums[mid] > target:
-                return binary_search(nums, low, mid - 1)
-            return binary_search(nums, mid + 1, high)
-
-        result = None
-        for row in matrix:
-            result = binary_search(row, 0, len(row) - 1)
-            if result or result == 0:
+        if not matrix:
+            return False
+        i = 0
+        j = len(matrix[0]) - 1
+        while i < len(matrix) and j >= 0:
+            if matrix[i][j] == target:
                 return True
-
+            if matrix[i][j] > target:
+                j -= 1
+            else:
+                i += 1
         return False
 
 
