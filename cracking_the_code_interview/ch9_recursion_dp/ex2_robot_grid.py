@@ -44,29 +44,26 @@ def parseGrid(content):
 def dpRobotGrid(grid):
     nrows = len(grid)
     ncols = len(grid[0])
-    table = [[] for row in range(nrows)]
-    for row in range(nrows):
-        for col in range(ncols):
-            if row == 0 or col == 0:
-                table[row].append(1)
-            else:
-                table[row].append(0)
+    table = [[1 if i == 0 or j == 0 else 0 for i in range(ncols)] for j in range(nrows)]
 
     # dp algorithm
-    for row in range(nrows):
-        for col in range(ncols):
+    for row in range(0, nrows):
+        for col in range(0, ncols):
             if not grid[row][col]:
                 table[row][col] = 0
             elif row > 0 and col > 0:
-                table[row][col] = table[row-1][col] + table[row][col-1]
+                table[row][col] = table[row - 1][col] + table[row][col - 1]
+
+            # these cases are needed for blocked fields
+            # contiguous fieds of blocked field get resetted to 0
             elif row > 0:
-                table[row][col] = table[row-1][col]
+                table[row][col] = table[row - 1][col]
             elif col > 0:
-                table[row][col] = table[row][col-1]
+                table[row][col] = table[row][col - 1]
 
     # return last element in table. It contains the number of all
     # possible ways to (X,Y) from (0,0)
-    return table[nrows-1][ncols-1]
+    return table[nrows - 1][ncols - 1]
 
 
 Case = namedtuple("Case", ["input", "expected"])
@@ -132,6 +129,11 @@ def testWithBlocking():
 010
 000"""
 
+    test5 = """010
+010
+010
+"""
+
     grid = parseGrid(test1)
     actual = dpRobotGrid(grid)
     assert actual == 20
@@ -147,3 +149,7 @@ def testWithBlocking():
     grid = parseGrid(test4)
     actual = dpRobotGrid(grid)
     assert actual == 2
+
+    grid = parseGrid(test5)
+    actual = dpRobotGrid(grid)
+    assert actual == 0

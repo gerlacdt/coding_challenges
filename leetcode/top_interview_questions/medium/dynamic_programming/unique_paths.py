@@ -33,102 +33,72 @@ It's guaranteed that the answer will be less than or equal to 2 * 10 ^ 9.
 
 """
 
-from collections import deque
+from collections import deque, namedtuple
 
 
 class Solution:
     def uniquePaths(self, m: int, n: int) -> int:
         start = (0, 0)
         goal = (m - 1, n - 1)
-        npaths = 0
-
-        def successors(position):
-            row, col = position
-            succs = []
-            if row + 1 < m:
-                succs.append((row + 1, col))
-            if col + 1 < n:
-                succs.append((row, col + 1))
-            return succs
 
         def helper(position):
-            nonlocal npaths
+            i, j = position
+            if i >= m or j >= n:
+                return 0
             if position == goal:
-                npaths += 1
-                return
-            for s in successors(position):
-                helper(s)
+                return 1
+            return helper((i + 1, j)) + helper((i, j + 1))
 
-        helper(start)
-        return npaths
+        return helper(start)
 
-    def uniquePaths2(self, m: int, n: int) -> int:
-        start = (m - 1, n - 1)
-        table = [[0 for _ in range(n)] for _ in range(m)]
-        table[m - 1][n - 1] = 1
-        frontier = deque([start])
-        visited = set()
+    def uniquePathsDP(self, m: int, n: int) -> int:
+        """Dynamic programming solution. First generate a base case table
+like:
 
-        while frontier:
-            i, j = frontier.popleft()
-            if (i, j) in visited:
-                continue
-            visited.add((i, j))
-            if j - 1 >= 0:
-                table[i][j - 1] = (
-                    table[i][j]
-                    if table[i][j - 1] == 0
-                    else table[i][j - 1] + table[i][j]
-                )
-                if (i, j - 1) not in visited:
-                    frontier.append((i, j - 1))
-            if i - 1 >= 0:
-                table[i - 1][j] = (
-                    table[i][j]
-                    if table[i - 1][j] == 0
-                    else table[i][j] + table[i - 1][j]
-                )
-                if (i - 1, j) not in visited:
-                    frontier.append((i - 1, j))
-        return table[0][0]
+        1111
+        1000
+        1000
+        1000
+
+        The 1s indicate there is only one path to this field. The 0s
+        need to be calculated bottom-up.
+
+        """
+        table = [[1 if i == 0 or j == 0 else 0 for i in range(n)] for j in range(m)]
+
+        for i in range(1, m):
+            for j in range(1, n):
+                if i > 0 and j > 0:
+                    table[i][j] = table[i - 1][j] + table[i][j - 1]
+
+        return table[m - 1][n - 1]
 
 
-def test():
+Case = namedtuple("Case", ["m", "n", "expected"])
+
+
+def testSmall():
     sol = Solution()
-    m = 7
-    n = 3
-    actual = sol.uniquePaths(m, n)
-    actual2 = sol.uniquePaths2(m, n)
-    expected = 28
-    assert actual == expected
-    assert actual2 == expected
+    cases = [
+        Case(7, 3, 28),
+        Case(3, 2, 3),
+        Case(3, 4, 10),
+        Case(7, 7, 924),
+        Case(4, 4, 20),
+        Case(1, 1, 1),
+    ]
 
-    m = 3
-    n = 2
-    actual = sol.uniquePaths(m, n)
-    actual2 = sol.uniquePaths2(m, n)
-    expected = 3
-    assert actual == expected
-    assert actual2 == expected
+    for c in cases:
+        actual = sol.uniquePaths(c.m, c.n)
+        actual2 = sol.uniquePathsDP(c.m, c.n)
+        assert actual == c.expected
+        assert actual2 == c.expected
 
-    m = 3
-    n = 4
-    actual = sol.uniquePaths(m, n)
-    actual2 = sol.uniquePaths2(m, n)
-    expected = 10
-    assert actual == expected
-    assert actual2 == expected
 
-    m = 7
-    n = 7
-    actual = sol.uniquePaths(m, n)
-    actual2 = sol.uniquePaths2(m, n)
-    expected = 924
-    assert actual == expected
-    assert actual2 == expected
-
+def testBig():
+    sol = Solution()
     m = 23
     n = 12
-    actual = sol.uniquePaths2(m, n)
+    actual = sol.uniquePathsDP(m, n)
     expected = 193536720
     assert actual == expected
