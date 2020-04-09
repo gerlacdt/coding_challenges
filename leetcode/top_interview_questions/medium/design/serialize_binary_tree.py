@@ -97,23 +97,19 @@ class Codec:
         :rtype: TreeNode
         """
         nums = eval(data)
-        i = 0
 
-        def helper():
-            nonlocal i
-            if i > len(nums):
-                return
-            num = nums[i]
+        def helper(nums):
+            if not nums:
+                raise RuntimeError("Illegal data: {}".format(data))
+            num = nums[0]
             if num == None:
-                i += 1
-                return None
+                return None, nums[1:]
             node = TreeNode(num)
-            i += 1
-            node.left = helper()
-            node.right = helper()
-            return node
+            node.left, lrest = helper(nums[1:])
+            node.right, rrest = helper(lrest)
+            return node, rrest
 
-        result = helper()
+        result, _ = helper(nums)
         return result
 
 
