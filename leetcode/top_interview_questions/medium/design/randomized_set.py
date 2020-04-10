@@ -46,7 +46,8 @@ class RandomizedSet:
         """
         Initialize your data structure here.
         """
-        self.data = set()
+        self.data = {}
+        self.lst = []
 
     def insert(self, val: int) -> bool:
         """Inserts a value to the set. Returns true if the set did not
@@ -54,32 +55,48 @@ class RandomizedSet:
         """
         if val in self.data:
             return False
-        self.data.add(val)
+        self.data[val] = len(self.lst)
+        self.lst.append(val)
         return True
 
     def remove(self, val: int) -> bool:
-        """
-        Removes a value from the set. Returns true if the set contained the specified element.
+        """Removes a value from the set. Returns true if the set contained
+        the specified element.
+
         """
         if val not in self.data:
             return False
-        self.data.remove(val)
+        index = self.data[val]
+        del self.data[val]
+
+        # update lst
+        size = len(self.lst)
+        last = self.lst[size - 1]
+        self.lst[index], self.lst[size - 1] = (
+            self.lst[size - 1],
+            self.lst[index],
+        )
+        del self.lst[-1]
+        if index != size - 1:
+            self.data[last] = index
         return True
 
     def getRandom(self) -> int:
         """
         Get a random element from the set.
         """
-        i = randint(0, len(self.data) - 1)
-        return list(self.data)[i]
+        if not self.lst:
+            raise RuntimeError("No elements in set.")
+        i = randint(0, len(self.lst) - 1)
+        return self.lst[i]
 
 
 def test1():
     obj = RandomizedSet()
     actual = obj.insert(1)
-    assert actual == True
+    assert actual
     actual = obj.remove(2)
-    assert actual == False
+    assert not actual
     actual = obj.getRandom()
     assert actual == 1
 
@@ -90,9 +107,57 @@ def test2():
         obj.insert(i)
 
     stats = defaultdict(int)
-    for i in range(10000):
+    for i in range(100000):
         val = obj.getRandom()
         stats[val] += 1
 
     pp = pprint.PrettyPrinter()
     pp.pprint(stats)
+
+
+def test3():
+    obj = RandomizedSet()
+    actual = [
+        obj.insert(0),
+        obj.insert(1),
+        obj.remove(0),
+        obj.insert(2),
+        obj.remove(1),
+        obj.getRandom(),
+    ]
+    assert actual == [True, True, True, True, True, 2]
+
+
+def test4():
+    obj = RandomizedSet()
+    actual = [
+        obj.remove(0),
+        obj.remove(0),
+        obj.insert(0),
+        obj.getRandom(),
+        obj.remove(0),
+        obj.insert(0),
+    ]
+    assert actual == [False, False, True, 0, True, True]
+
+
+def test5():
+    obj = RandomizedSet()
+    # inserts
+    lst = list(range(3))
+    for i in lst:
+        obj.insert(i)
+
+    assert obj.data == {0: 0, 1: 1, 2: 2}
+    assert obj.lst == [0, 1, 2]
+    # removes
+
+    obj.remove(0)
+    assert obj.data == {1: 1, 2: 0}
+    assert obj.lst == [2, 1]
+    obj.remove(1)
+    assert obj.data == {2: 0}
+    assert obj.lst == [2]
+    obj.remove(2)
+    assert obj.data == {}
+    assert obj.lst == []
