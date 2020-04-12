@@ -35,13 +35,54 @@ Explanation:
 
 """
 
+from collections import namedtuple
 from typing import List
+import operator
+
+
+def mydiv(a, b):
+    if a // b < 0 and a % b != 0:
+        return (a // b) + 1
+    return a // b
+
+
+OPTABLE = {
+    "/": mydiv,
+    "*": operator.mul,
+    "+": operator.add,
+    "-": operator.sub,
+}
 
 
 class Solution:
     def evalRPN(self, tokens: List[str]) -> int:
-        pass
+        result: List[int] = []
+        for elem in tokens:
+            if elem in "+-*/":
+                a, b = result.pop(), result.pop()
+                result.append(OPTABLE[elem](b, a))
+                continue
+            result.append(int(elem))  # for internal result use integers
+        return result[0]
+
+
+Case = namedtuple("Case", ["tokens", "expected"])
 
 
 def testEval():
-    pass
+    sol = Solution()
+    cases = [
+        Case(["2", "1", "+", "3", "*"], 9),
+        Case(["4", "13", "5", "/", "+"], 6),
+        Case(["4", "2", "/"], 2),
+        Case(["4", "2", "*"], 8),
+        Case(["4", "1", "-"], 3),
+        Case(["-2", "-3", "+"], -5),
+        Case(["-2", "-3", "*"], 6),
+        Case(
+            ["10", "6", "9", "3", "+", "-11", "*", "/", "*", "17", "+", "5", "+"], 22,
+        ),
+    ]
+    for c in cases:
+        actual = sol.evalRPN(c.tokens)
+        assert actual == c.expected, "Case: {}".format(c)
