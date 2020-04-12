@@ -13,7 +13,21 @@ Output: 1
 """
 
 from collections import namedtuple
-from time import sleep
+
+
+def toBinaryString(x: int, bits=8) -> str:
+    """Return bits-length binary string representation of the given
+integer. If x is negative the two-complement is created.
+    """
+    return "".join(list(reversed([str((x >> i) & 1) for i in range(bits)])))
+
+
+def toDecimal(s: str) -> int:
+    if s[0] == "1":
+        # manually convert two complement string in order to get absolute value
+        s = "".join(["0" if c == "1" else "1" for c in s])
+        return -(int(s[1:], 2) + 1)
+    return int(s[1:], 2)
 
 
 class Solution:
@@ -70,21 +84,6 @@ def testSum():
     for c in cases:
         actual = sol.getSum(c.a, c.b)
         assert actual == c.expected, "Case: {}".format(c)
-
-
-def toBinaryString(x: int, bits=8) -> str:
-    """Return bits-length binary string representation of the given
-integer. If x is negative the two-complement is created.
-    """
-    return "".join(list(reversed([str((x >> i) & 1) for i in range(bits)])))
-
-
-def toDecimal(s: str) -> int:
-    if s[0] == "1":
-        # manually convert two complement string in order to get absolute value
-        s = "".join(["0" if c == "1" else "1" for c in s])
-        return -(int(s[1:], 2) + 1)
-    return int(s[1:], 2)
 
 
 SimpleCase = namedtuple("SimpleCase", ["x", "expected"])
