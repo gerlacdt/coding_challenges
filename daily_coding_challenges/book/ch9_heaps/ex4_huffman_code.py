@@ -54,12 +54,11 @@ def createHuffmanTree(dictionary):
     h = []
     for char, frequency in dictionary.items():
         heappush(h, (frequency, Node(char, None, None)))
-    if len(h) == 1:
-        f, left = heappop(h)
-        return Node("*", left, None)
     while len(h) > 1:
         f1, left = heappop(h)
         f2, right = heappop(h)
+        # TODO does not really work because Node does not implement <
+        # aka __lt__(self, other)
         merged = (f1 + f2, Node("*", left, right))
         heappush(h, merged)
     freq, tree = heappop(h)
@@ -68,22 +67,17 @@ def createHuffmanTree(dictionary):
 
 def createEncoding(tree):
     encodings = {}
-    path = []
 
-    def dfs(node):
+    def helper(node, path):
+        if not node:
+            return
         if not node.left and not node.right:
             encodings[node.char] = "".join(path)
-        else:
-            if node.left:
-                path.append("0")
-                dfs(node.left)
-                path.pop()
-            if node.right:
-                path.append("1")
-                dfs(node.right)
-                path.pop()
+            return
+        helper(node.left, path + "0")
+        helper(node.right, path + "1")
 
-    dfs(tree)
+    helper(tree, "")
     return encodings
 
 
