@@ -29,18 +29,18 @@ from collections import namedtuple
 
 class Solution:
     def myPow(self, x: float, n: int) -> float:
-        result = 1.0
-        if n > 0:
-            for i in range(n):
-                result *= x
-            return result
-        elif n < 0:
-            n = -n
-            for i in range(n):
-                result *= x
-            return 1 / result
-        else:
-            return result
+        def helper(x, n):
+            if not n:
+                return 1
+            tmp = self.myPow(x, int(n / 2))
+            if int(n % 2) == 0:
+                return tmp * tmp
+            else:
+                return x * tmp * tmp
+
+        if n >= 0:
+            return helper(x, n)
+        return 1 / helper(x, -n)
 
 
 Case = namedtuple("Case", ["x", "n", "expected"])
@@ -53,8 +53,8 @@ def test():
         Case(2.0, 10, 1024.0),
         Case(2.0, 0, 1),
         Case(2.00000, -2, 0.25),
-        # Case(0.00001, 2147483647),
+        Case(0.00001, 2147483647, 0.0),
     ]
     for c in cases:
         actual = sol.myPow(c.x, c.n)
-        assert actual == c.expected
+        assert actual == c.expected, "Case: {}".format(c)
