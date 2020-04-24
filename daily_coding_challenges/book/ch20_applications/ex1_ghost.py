@@ -1,11 +1,24 @@
+"""Ghost is a two-person word game where players alternate appending
+letters to a word. The first person who spells out a dictionary word,
+or creates a prefix for which there is no possible continutation,
+loses. Here is a sample game:
+
+Turn    Letter
+
+P1      g
+P2      h
+P1      o
+P2      s
+P1      t
+
+Player 1 loses since they spelled "ghost".
+
+Given a dictionary of words, determine the letters the first player
+should start with, such that with optimal play they cannot lose.
+
+For example, if the dictionary is ["cat", "calf", "dog", "bear"], the
+only winning start letter would be b.
 """
-20.1 Ghost
-
-Page 238
-
-"""
-
-# build Trie
 
 IS_WORD = "#"
 
@@ -39,9 +52,6 @@ class Trie:
 
     def __repr__(self):
         return "{}".format(self.root)
-
-
-# check if for winning beginning character
 
 
 def is_winning(trie, prefix):
