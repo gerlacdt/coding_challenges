@@ -19,6 +19,10 @@ may have a solution:
 from collections import namedtuple
 from itertools import permutations
 import re
+import cProfile
+import pstats
+import io
+from pstats import SortKey
 
 
 def solve(formula):
@@ -62,3 +66,18 @@ def testSolve():
         actual = solve(c.formula)
         print("actual {}".format(actual))
         assert eval(actual)
+
+
+def testProfiling():
+    pr = cProfile.Profile()
+    pr.enable()
+    formula = "SEND + MORE = MONEY"
+    actual = solve(formula)
+    pr.disable()
+    s = io.StringIO()
+    sortby = SortKey.CUMULATIVE
+    ps = pstats.Stats(pr, stream=s).sort_stats(sortby)
+    ps.print_stats()
+    print(s.getvalue())
+    print("actual {}".format(actual))
+    assert eval(actual)
