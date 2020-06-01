@@ -56,7 +56,7 @@ def reverseRows(matrix):
     n = len(matrix)
     for y in range(n):
         for x in range(n // 2):
-            matrix[y][x], matrix[y][n-x-1] = matrix[y][n-x-1], matrix[y][x]
+            matrix[y][x], matrix[y][n - x - 1] = matrix[y][n - x - 1], matrix[y][x]
 
 
 class Solution:
@@ -65,25 +65,15 @@ class Solution:
         Do not return anything, modify matrix in-place instead.
         """
         transpose(matrix)
-        reverseColumns(matrix)
+        reverseRows(matrix)
 
 
 def test():
-    input1 = [[1, 2, 3],
-              [4, 5, 6],
-              [7, 8, 9]]
-    expected1 = [[7, 4, 1],
-                 [8, 5, 2],
-                 [9, 6, 3]]
+    input1 = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+    expected1 = [[7, 4, 1], [8, 5, 2], [9, 6, 3]]
 
-    input2 =[[5, 1, 9, 11],
-             [2, 4, 8, 10],
-             [13, 3, 6, 7],
-             [15, 14, 12, 16]]
-    expected2 = [[15, 13, 2, 5],
-                 [14, 3, 4, 1],
-                 [12, 6, 8, 9],
-                 [16, 7, 10, 11]]
+    input2 = [[5, 1, 9, 11], [2, 4, 8, 10], [13, 3, 6, 7], [15, 14, 12, 16]]
+    expected2 = [[15, 13, 2, 5], [14, 3, 4, 1], [12, 6, 8, 9], [16, 7, 10, 11]]
 
     sol = Solution()
     sol.rotate(input1)
