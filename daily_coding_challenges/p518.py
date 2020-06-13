@@ -9,16 +9,33 @@ example, given [20, 303, 3, 4, 25] and k = 49, return true as 20 + 4 +
 
 """
 
+from collections import namedtuple
+
 
 class Solution:
     def solve(self, nums, k):
-        pass
+        for i, n in enumerate(nums):
+            seen = set()
+            k2 = k - n
+            # solve the 2Sum problem
+            for j, n2 in enumerate(nums):
+                if i == j:
+                    continue
+                if n2 in seen:
+                    return True
+                seen.add(k2 - n2)
+        return False
+
+
+Case = namedtuple("Case", ["nums", "k", "expected"])
 
 
 def test():
-    nums = [20, 303, 3, 4, 25]
-    k = 49
+    cases = [
+        Case([20, 303, 3, 4, 25], 49, True),
+        Case([20, 303, 3, 4, 25], 50, False),
+    ]
     sol = Solution()
-    actual = sol.solve(nums, k)
-    expected = True
-    assert actual == expected
+    for c in cases:
+        actual = sol.solve(c.nums, c.k)
+        assert actual == c.expected, "Case: {}, {}".format(c.nums, c.k)
