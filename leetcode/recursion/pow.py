@@ -26,12 +26,16 @@ class Solution:
         def helper(x, n):
             if not n:
                 return 1
-            tmp = helper(x, n // 2)
+            # n // 2 does not work for negative numbers
+            # -5 // 2 == -3, instead of expected -2
+            tmp = helper(x, int(n / 2))
             if n % 2 == 0:
                 return tmp * tmp
             return tmp * tmp * x
 
-        return helper(x, n)
+        if n >= 0:
+            return helper(x, n)
+        return 1 / helper(x, n)
 
 
 Case = namedtuple("Case", ["x", "n", "expected"])
