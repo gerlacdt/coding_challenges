@@ -17,9 +17,9 @@ Explanation:
 The above output corresponds to the 5 unique BST's shown below:
 
    1         3     3      2      1
-    \       /     /      / \      \
+    \\       /     /      / \\      \\
      3     2     1      1   3      2
-    /     /       \                 \
+    /     /       \\                 \\
    2     1         2                 3
 
 
@@ -30,6 +30,7 @@ Constraints:
 """
 
 from typing import List
+from collections import namedtuple
 
 
 class TreeNode:
@@ -44,11 +45,38 @@ class TreeNode:
 
 class Solution:
     def generateTrees(self, n: int) -> List[TreeNode]:
-        pass
+        if n == 0:
+            return []
+
+        def helper(rest):
+            if not rest:
+                return [None]
+            result = []
+            for i in range(len(rest)):
+                val = rest[i]
+                leftChildren = helper(rest[:i])
+                rightChildren = helper(rest[i + 1 :])
+                for leftSubtree in leftChildren:
+                    for rightSubtree in rightChildren:
+                        result.append(TreeNode(val, leftSubtree, rightSubtree))
+            return result
+
+        return helper([i + 1 for i in range(n)])
 
 
-def test1():
+Case = namedtuple("Case", ["n", "expected"])
+
+
+def test():
+    cases = [
+        Case(0, 0),
+        Case(1, 1),
+        Case(2, 2),
+        Case(3, 5),
+        Case(4, 14),
+        Case(5, 42),
+    ]
     sol = Solution()
-    actual = sol.generateTrees(3)
-    expected = [[]]
-    assert actual == expected
+    for c in cases:
+        actual = sol.generateTrees(c.n)
+        assert len(actual) == c.expected, "Case: {}".format(c.n)
