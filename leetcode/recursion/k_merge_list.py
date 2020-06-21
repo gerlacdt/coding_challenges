@@ -13,6 +13,7 @@ Output: 1->1->2->3->4->4->5-6>
 
 """
 
+from heapq import heappush, heappop
 from typing import List
 
 
@@ -34,9 +35,35 @@ def toList(head):
     return result
 
 
+def reverse(head):
+    current = head
+    prev = None
+    while current:
+        tmp = current.next
+        current.next = prev
+        prev = current
+        current = tmp
+
+    return prev
+
+
 class Solution:
     def mergeKLists(self, lists: List[ListNode]) -> ListNode:
-        pass
+        heap: List = []
+        head: ListNode = None
+        for i, l in enumerate(lists):
+            if not l:
+                continue
+            heappush(heap, (l.val, i))
+
+        while heap:
+            val, index = heappop(heap)
+            head = ListNode(val, head)
+            lists[index] = lists[index].next
+            if lists[index]:
+                heappush(heap, (lists[index].val, index))
+
+        return reverse(head)
 
 
 def test():
