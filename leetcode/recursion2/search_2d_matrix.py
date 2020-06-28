@@ -20,7 +20,7 @@ Given target = 20, return false.
 
 
 see:
-https://www.geeksforgeeks.org/search-in-a-row-wise-and-column-wise-sorted-2d-array-using-divide-and-conquer-algorithm/
+https://leetcode.com/explore/learn/card/recursion-ii/470/divide-and-conquer/2872/discuss/694432/python-divide-and-conquer
 
 """
 
