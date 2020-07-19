@@ -85,10 +85,74 @@ class Solution:
 
         return result
 
+    def getSkyline2(self, buildings: List[List[int]]) -> List[List[int]]:
+        """Divide-and-Conquer approach"""
 
-def test():
+        def helper(left, right):
+            if left == right:
+                l, r, height = buildings[left]
+                return [[l, height], [r, 0]]
+            mid = (left + right) // 2
+            r1 = helper(left, mid)
+            r2 = helper(mid + 1, right)
+            return self._merge(r1, r2)
+
+        return helper(0, len(buildings) - 1)
+
+    def _merge(self, strip1, strip2):
+        """Strip entries are 2-tuples (x-axis beginning value, height)"""
+        height1 = height2 = 0
+        i = j = 0
+        result = []
+        while i < len(strip1) and j < len(strip2):
+            leftX, leftHeight = strip1[i]
+            rightX, rightHeight = strip2[j]
+            if leftX <= rightX:
+                height1 = leftHeight
+                i += 1
+                if result and result[-1][1] == max(height1, height2):
+                    continue
+                result.append([leftX, max(height1, height2)])
+            else:
+                height2 = rightHeight
+                j += 1
+                if result and result[-1][1] == max(height1, height2):
+                    continue
+                result.append([rightX, max(height1, height2)])
+
+        for k in range(i, len(strip1)):
+            result.append(strip1[k])
+
+        for k in range(j, len(strip2)):
+            result.append(strip2[k])
+
+        return result
+
+
+def testSkyline():
     sol = Solution()
     buildings = [[2, 9, 10], [3, 7, 15], [5, 12, 12], [15, 20, 10], [19, 24, 8]]
     actual = sol.getSkyline(buildings)
+    actual2 = sol.getSkyline2(buildings)
     expected = [[2, 10], [3, 15], [7, 12], [12, 0], [15, 10], [20, 8], [24, 0]]
+    assert actual == expected
+    assert actual2 == expected
+
+
+def testMerge():
+    sol = Solution()
+    strip1 = [[1, 11], [3, 13], [9, 0], [12, 7], [16, 0]]
+    strip2 = [[14, 3], [19, 18], [22, 3], [23, 13], [29, 0]]
+    actual = sol._merge(strip1, strip2)
+    expected = [
+        [1, 11],
+        [3, 13],
+        [9, 0],
+        [12, 7],
+        [16, 3],
+        [19, 18],
+        [22, 3],
+        [23, 13],
+        [29, 0],
+    ]
     assert actual == expected
