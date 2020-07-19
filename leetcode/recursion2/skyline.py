@@ -87,6 +87,8 @@ class Solution:
 
     def getSkyline2(self, buildings: List[List[int]]) -> List[List[int]]:
         """Divide-and-Conquer approach"""
+        if not buildings:
+            return []
 
         def helper(left, right):
             if left == right:
@@ -104,21 +106,31 @@ class Solution:
         height1 = height2 = 0
         i = j = 0
         result = []
+        skyline = 0
         while i < len(strip1) and j < len(strip2):
             leftX, leftHeight = strip1[i]
             rightX, rightHeight = strip2[j]
-            if leftX <= rightX:
+            if leftX < rightX:
                 height1 = leftHeight
                 i += 1
-                if result and result[-1][1] == max(height1, height2):
-                    continue
-                result.append([leftX, max(height1, height2)])
-            else:
+                if skyline != max(height1, height2):
+                    skyline = max(height1, height2)
+                    result.append([leftX, skyline])
+
+            elif leftX > rightX:
                 height2 = rightHeight
                 j += 1
-                if result and result[-1][1] == max(height1, height2):
-                    continue
-                result.append([rightX, max(height1, height2)])
+                if skyline != max(height1, height2):
+                    skyline = max(height1, height2)
+                    result.append([rightX, skyline])
+            else:
+                height1 = leftHeight
+                height2 = rightHeight
+                i += 1
+                j += 1
+                if skyline != max(height1, height2):
+                    skyline = max(height1, height2)
+                    result.append([leftX, skyline])
 
         for k in range(i, len(strip1)):
             result.append(strip1[k])
@@ -129,14 +141,26 @@ class Solution:
         return result
 
 
+Case = namedtuple("Case", ["buildings", "expected"])
+
+
 def testSkyline():
+    cases = [
+        Case(
+            [[2, 9, 10], [3, 7, 15], [5, 12, 12], [15, 20, 10], [19, 24, 8]],
+            [[2, 10], [3, 15], [7, 12], [12, 0], [15, 10], [20, 8], [24, 0]],
+        ),
+        Case([], []),
+        Case([[0, 2, 3], [2, 5, 3]], [[0, 3], [5, 0]]),
+        Case([[2, 9, 10], [9, 12, 15]], [[2, 10], [9, 15], [12, 0]]),
+        Case([[1, 2, 1], [1, 2, 2], [1, 2, 3]], [[1, 3], [2, 0]]),
+    ]
     sol = Solution()
-    buildings = [[2, 9, 10], [3, 7, 15], [5, 12, 12], [15, 20, 10], [19, 24, 8]]
-    actual = sol.getSkyline(buildings)
-    actual2 = sol.getSkyline2(buildings)
-    expected = [[2, 10], [3, 15], [7, 12], [12, 0], [15, 10], [20, 8], [24, 0]]
-    assert actual == expected
-    assert actual2 == expected
+    for c in cases:
+        actual = sol.getSkyline(c.buildings)
+        actual2 = sol.getSkyline2(c.buildings)
+        assert actual == c.expected, "Case: {}".format(c.buildings)
+        assert actual2 == c.expected, "Case: {}".format(c.buildings)
 
 
 def testMerge():
