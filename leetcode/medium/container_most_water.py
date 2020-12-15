@@ -40,8 +40,28 @@ from typing import List
 
 
 class Solution:
-    def maxArea(self, height: List[int]) -> int:
-        pass
+    def maxArea(self, heights: List[int]) -> int:
+        maxHeight = 0
+        l = 0
+        r = len(heights) - 1
+        while l < r:
+            currentHeight = min(heights[l], heights[r]) * (r - l)
+            maxHeight = max(maxHeight, currentHeight)
+            if heights[l] <= heights[r]:
+                l += 1
+            else:
+                r -= 1
+        return maxHeight
+
+    def maxArea2(self, heights: List[int]) -> int:
+        maxTotal = 0
+        for i, current in enumerate(heights):
+            maxTmp = 0
+            for j in range(i + 1, len(heights)):
+                containerHeight = min(current, heights[j])
+                maxTmp = max(maxTmp, containerHeight * (j - i))
+            maxTotal = max(maxTotal, maxTmp)
+        return maxTotal
 
 
 Case = namedtuple("Case", ["height", "expected"])
@@ -58,4 +78,6 @@ def test():
 
     for c in cases:
         actual = sol.maxArea(c.height)
+        actual2 = sol.maxArea(c.height)
         assert actual == c.expected
+        assert actual2 == c.expected
