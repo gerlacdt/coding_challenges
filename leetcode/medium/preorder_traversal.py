@@ -62,6 +62,21 @@ class Solution:
         helper(root)
         return result
 
+    def iterative(self, root: TreeNode) -> List[int]:
+        if not root:
+            return []
+        result = []
+        stack = [root]
+        while stack:
+            node = stack.pop()
+            result.append(node.val)
+            if node.right:
+                stack.append(node.right)
+            if node.left:
+                stack.append(node.left)
+
+        return result
+
 
 Case = namedtuple("Case", ["root", "expected"])
 
@@ -78,3 +93,6 @@ def test():
     for c in cases:
         actual = sol.preorderTraversal(c.root)
         assert actual == c.expected
+
+        actual2 = sol.iterative(c.root)
+        assert actual2 == c.expected
