@@ -67,7 +67,13 @@ Case = namedtuple("Case", ["input", "expected"])
 
 
 def test():
-    cases = [Case("111", 3), Case("271", 1), Case("172", 2), Case("1111", 5)]
+    cases = [
+        Case("111", 3),
+        Case("271", 1),
+        Case("172", 2),
+        Case("1111", 5),
+        Case("2101", 1),
+    ]
     for c in cases:
         actual = decode(c.input)
         actual1 = decodeMemo(c.input)
