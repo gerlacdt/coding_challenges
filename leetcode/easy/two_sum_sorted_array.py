@@ -45,6 +45,19 @@ class Solution:
                 return sorted([i + 1, table[x] + 1])
         return []
 
+    def twoSum2(self, numbers: List[int], target: int) -> List[int]:
+        lo = 0
+        hi = len(numbers) - 1
+        while lo < hi:
+            current = numbers[lo] + numbers[hi]
+            if current < target:
+                lo += 1
+            elif current > target:
+                hi -= 1
+            else:
+                return [lo + 1, hi + 1]
+        return []
+
 
 Case = namedtuple("Case", ["numbers", "target", "expected"])
 
@@ -60,3 +73,6 @@ def test():
     for c in cases:
         actual = sol.twoSum(c.numbers, c.target)
         assert actual == c.expected
+
+        actual = sol.twoSum2(c.numbers, c.target)
+        assert actual == c.expected, f"{c.numbers}, {c.target}"
