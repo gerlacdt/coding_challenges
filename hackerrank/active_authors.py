@@ -25,4 +25,16 @@ def getUsernames(threshold):
 
 def test():
     actual = getUsernames(10)
-    assert 1 == 2
+    expected = [
+        "epaga",
+        "panny",
+        "olalonde",
+        "WisNorCan",
+        "dmmalam",
+        "replicatorblog",
+        "vladikoff",
+        "mpweiher",
+        "coloneltcb",
+        "guelo",
+    ]
+    assert expected == actual
