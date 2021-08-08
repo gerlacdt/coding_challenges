@@ -21,11 +21,34 @@ Output: [[2,2,2,2]]
 
 from typing import List, Dict, Tuple, Set
 from collections import namedtuple, defaultdict
+from bisect import bisect_left
+
+
+def binary_search(a, x, low):
+    "Locate the leftmost value exactly equal to x"
+    i = bisect_left(a, x, low)
+    if i != len(a) and a[i] == x:
+        return i
+    return None
 
 
 class Solution:
     def fourSum(self, nums: List[int], target: int) -> List[List[int]]:
-        pass
+        nums.sort()
+        n = len(nums)
+        result: Set[Tuple[int]] = set()
+
+        for i in range(n):
+            for j in range(i + 1, n):
+                for k in range(j + 1, n):
+                    rest = nums[i] + nums[j] + nums[k]
+                    last_index = binary_search(nums, target - rest, k + 1)
+                    if last_index or last_index == 0:
+                        tmp = [nums[i], nums[j], nums[k], nums[last_index]]
+                        tmp.sort()
+                        result.add(tuple(tmp))
+
+        return sorted([list(r) for r in result])
 
     def twoSum(self, nums: List[int], target: int) -> List[List[int]]:
         table: Dict[int, int] = {}
@@ -60,7 +83,7 @@ class Solution:
 Case = namedtuple("Case", ["nums", "target", "expected"])
 
 
-def test():
+def testFourSum():
     cases = [
         Case(
             [1, 0, -1, 0, -2, 2],
@@ -68,11 +91,48 @@ def test():
             [[-2, -1, 1, 2], [-2, 0, 0, 2], [-1, 0, 0, 1]],
         ),
         Case([2, 2, 2, 2, 2], 8, [[2, 2, 2, 2]]),
+        Case(
+            [-5, -4, -3, -2, -1, 0, 0, 1, 2, 3, 4, 5],
+            0,
+            [
+                [-5, -4, 4, 5],
+                [-5, -3, 3, 5],
+                [-5, -2, 2, 5],
+                [-5, -2, 3, 4],
+                [-5, -1, 1, 5],
+                [-5, -1, 2, 4],
+                [-5, 0, 0, 5],
+                [-5, 0, 1, 4],
+                [-5, 0, 2, 3],
+                [-4, -3, 2, 5],
+                [-4, -3, 3, 4],
+                [-4, -2, 1, 5],
+                [-4, -2, 2, 4],
+                [-4, -1, 0, 5],
+                [-4, -1, 1, 4],
+                [-4, -1, 2, 3],
+                [-4, 0, 0, 4],
+                [-4, 0, 1, 3],
+                [-3, -2, 0, 5],
+                [-3, -2, 1, 4],
+                [-3, -2, 2, 3],
+                [-3, -1, 0, 4],
+                [-3, -1, 1, 3],
+                [-3, 0, 0, 3],
+                [-3, 0, 1, 2],
+                [-2, -1, 0, 3],
+                [-2, -1, 1, 2],
+                [-2, 0, 0, 2],
+                [-1, 0, 0, 1],
+            ],
+        ),
     ]
     sol = Solution()
     for c in cases:
         actual = sol.fourSum(c.nums, c.target)
-        assert actual == c.expected
+        assert sorted(actual) == sorted(c.expected), "Case: {}, target: {}".format(
+            c.nums, c.target
+        )
 
 
 def testThreeSum():
