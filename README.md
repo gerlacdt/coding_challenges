@@ -1,10 +1,10 @@
 # Coding Challenges
 
-My collection of coding challenges i have done.
+Collection of coding challenges I have done over the years.
 
-Mostly i use [python](https://www.python.org/) for the solutions.
+Mostly I use [python](https://www.python.org/) for the solutions.
 
-Following resources are used:
+The problem statements are a mixture from different resources:
 
 * [cracking the code interview](http://www.crackingthecodinginterview.com/)
 * [daily coding problem](https://www.dailycodingproblem.com/)
