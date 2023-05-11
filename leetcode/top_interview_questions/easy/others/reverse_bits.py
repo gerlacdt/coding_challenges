@@ -2,7 +2,7 @@
 
 Example 1:
 
-Input: 00000010100101000001111010011100
+Input:  00000010100101000001111010011100
 Output: 00111001011110000010100101000000
 
 Explanation: The input binary string 00000010100101000001111010011100
@@ -10,7 +10,7 @@ represents the unsigned integer 43261596, so return 964176192 which
 its binary representation is 00111001011110000010100101000000.
 
 Example 2:
-Input: 11111111111111111111111111111101
+Input:  11111111111111111111111111111101
 Output: 10111111111111111111111111111111
 
 Explanation: The input binary string 11111111111111111111111111111101
@@ -42,18 +42,18 @@ class Solution:
         binArr = self.binary(n)
         result = 0
         for d in range(len(binArr)):
-            val = binArr[d] * 2**d
+            val = binArr[d] * 2 ** d
             result += val
         return result
 
     def binary(self, n):
         remstack = []
         x = n
-        while (x > 0):
+        while x > 0:
             rem = x % 2
             remstack.append(rem)
             x = x // 2
-        while (len(remstack) < 32):
+        while len(remstack) < 32:
             remstack.append(0)
         return list(reversed(remstack))
 
